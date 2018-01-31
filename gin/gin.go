@@ -11,12 +11,12 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK,"Hello World")
+		c.String(http.StatusOK, "Hello World")
 	})
 
 	r.GET("/user/:id", func(c *gin.Context) {
 
-		c.JSON(http.StatusOK,gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"User": c.Param("id"),
 			"Name": "Yamada",
 		})
