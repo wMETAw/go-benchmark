@@ -11,7 +11,6 @@ func BenchmarkGenmaiCreate(b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 
 	db.DB().Query("TRUNCATE TABLE users")
 
@@ -43,7 +42,6 @@ func BenchmarkGenmaiRead(b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 
 	b.ResetTimer()
 
@@ -61,7 +59,6 @@ func BenchmarkGenmaiUpdate(b *testing.B) {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 
 	b.ResetTimer()
 
@@ -77,15 +74,15 @@ func BenchmarkGenmaiUpdate(b *testing.B) {
 		panic(err)
 	}
 
-	for i := 0; i < b.N; i++ {
+	var users []Users
+	if err := db.Select(&users, db.Where("id", "=", 1)); err != nil {
+		panic(err)
+	}
+	user := users[0]
+	user.Name = "mini"
 
-		var u []Users
-		if err := db.Select(&u); err != nil {
-			panic(err)
-		}
-		o := u[0]
-		o.Name = "nico"
-		if _, err := db.Update(&o); err != nil {
+	for i := 0; i < b.N; i++ {
+		if _, err := db.Update(&user); err != nil {
 			panic(err)
 		}
 	}
